@@ -2,6 +2,8 @@
 
 MiLed is an easy-to-use Arduino library designed for programming addressable LED strips, specifically WS2812. This library simplifies the process of controlling WS2812 LED strips, allowing you to create captivating lighting effects effortlessly.
 
+Check [MiLed's documentation](https://byte-white.github.io/miled-docs/) for more info.
+
 ## Features
 
 - **User-Friendly Interface:** MiLed provides a straightforward  API for controlling WS2812 LED strips.
