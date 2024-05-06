@@ -30,10 +30,10 @@ void setup()
 
 void loop()
 {
-    ml[0] = Led(30,0,0);
+    ml[0] = LedColor(30,0,0);
     ml.show();
     delay(500);
-    ml[0] = Led(0);
+    ml[0] = LedColor(0);
     ml.show();
     delay(500);
 }
