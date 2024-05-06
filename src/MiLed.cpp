@@ -2,22 +2,22 @@
 #include "MiLed.h"
 
 
-void MiLed::dio_write(uint8_t b)
+void MiLed::dio_write(uint8_t byte)
 {
   for(int i = 0;i<8;i++)
   {
-      if(b & 0x80)
+      if(byte & 0x80)
       {
         digitalWrite(m_datapin,HIGH);
         digitalWrite(m_datapin,LOW);
       }
       else 
-      {
-        PORTB |= databit;
-        PORTB &= ~databit;PORTB &= ~databit;PORTB &= ~databit;PORTB &= ~databit; // 4
+      { // 0.35us ; 0.8us
+        PORTB |= m_databit; 
+        PORTB &= ~m_databit;
+        asm("nop");
       }
-    b<<=1;
-    //delayMicroseconds(10);
+    byte<<=1;
   }
 }
 
@@ -26,7 +26,6 @@ void MiLed::send(uint8_t R,uint8_t G,uint8_t B)
   dio_write(G);
   dio_write(R);
   dio_write(B);
-  //delayMicroseconds(2);
 }
 void MiLed::reset()
 {
@@ -41,20 +40,20 @@ MiLed::MiLed(int datapin,int count)
   pinMode(m_datapin, OUTPUT);
   digitalWrite(m_datapin, LOW);
   
-  data = malloc(sizeof(Led)*count);
-  memset(data,0,sizeof(Led)*count);
+  data = malloc(sizeof(LedColor)*count);
+  memset(data,0,sizeof(LedColor)*count);
 
-  databit = digitalPinToBitMask(m_datapin);
+  m_databit = digitalPinToBitMask(m_datapin);
 }
 
-Led& MiLed::operator[](unsigned int index)
+LedColor& MiLed::operator[](unsigned int index)
 {  
   return data[index];
 }
 
 void MiLed::clear()
 {
-  memset(data,0,sizeof(Led)*m_count);
+  memset(data,0,sizeof(LedColor)*m_count);
 }
 
 void MiLed::show()

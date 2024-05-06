@@ -2,82 +2,82 @@
 
 #ifndef MILED_H
 #define MILED_H
-struct Led
+struct LedColor
 {
   uint8_t r,g,b;
-  Led(uint8_t r,uint8_t g,uint8_t b)
+  LedColor(uint8_t r,uint8_t g,uint8_t b)
   :r(r),g(g),b(b)
   {}
-  Led()
+  LedColor()
   :r(0),g(0),b(0)
   {}
-  Led(uint8_t all)
+  LedColor(uint8_t all)
   :r(all),g(all),b(all)
   {}
-  Led(const Led& l)
+  LedColor(const LedColor& l)
   :r(l.r),g(l.g),b(l.b)
   {}
   
-  Led operator*(uint8_t d)
+  LedColor operator*(uint8_t d)
   {
-      return Led(clamp(static_cast<int>(this->r) * d, 0, 255),
+      return LedColor(clamp(static_cast<int>(this->r) * d, 0, 255),
                 clamp(static_cast<int>(this->g) * d, 0, 255),
                 clamp(static_cast<int>(this->b) * d, 0, 255));
   }
 
-  Led operator/(uint8_t d)
+  LedColor operator/(uint8_t d)
   {
       // Ensure d is not zero to avoid division by zero
       d = (d == 0) ? 1 : d;
 
-      return Led(clamp(static_cast<int>(this->r) / d, 0, 255),
+      return LedColor(clamp(static_cast<int>(this->r) / d, 0, 255),
                 clamp(static_cast<int>(this->g) / d, 0, 255),
                 clamp(static_cast<int>(this->b) / d, 0, 255));
   }
 
-  Led operator+(uint8_t d)
+  LedColor operator+(uint8_t d)
   {
-      return Led(clamp(static_cast<int>(this->r) + d, 0, 255),
+      return LedColor(clamp(static_cast<int>(this->r) + d, 0, 255),
                 clamp(static_cast<int>(this->g) + d, 0, 255),
                 clamp(static_cast<int>(this->b) + d, 0, 255));
   }
 
-  Led operator-(uint8_t d)
+  LedColor operator-(uint8_t d)
   {
-      return Led(clamp(static_cast<int>(this->r) - d, 0, 255),
+      return LedColor(clamp(static_cast<int>(this->r) - d, 0, 255),
                 clamp(static_cast<int>(this->g) - d, 0, 255),
                 clamp(static_cast<int>(this->b) - d, 0, 255));
   }
 
-  Led operator*(Led l)
+  LedColor operator*(LedColor l)
   {
-      return Led(clamp(static_cast<int>(this->r) * static_cast<int>(l.r), 0, 255),
+      return LedColor(clamp(static_cast<int>(this->r) * static_cast<int>(l.r), 0, 255),
                 clamp(static_cast<int>(this->g) * static_cast<int>(l.g), 0, 255),
                 clamp(static_cast<int>(this->b) * static_cast<int>(l.b), 0, 255));
   }
 
-  Led operator/(Led l)
+  LedColor operator/(LedColor l)
   {
       // Avoid division by zero
       l.r = (l.r == 0) ? 1 : l.r;
       l.g = (l.g == 0) ? 1 : l.g;
       l.b = (l.b == 0) ? 1 : l.b;
 
-      return Led(clamp(static_cast<int>(this->r) / static_cast<int>(l.r), 0, 255),
+      return LedColor(clamp(static_cast<int>(this->r) / static_cast<int>(l.r), 0, 255),
                 clamp(static_cast<int>(this->g) / static_cast<int>(l.g), 0, 255),
                 clamp(static_cast<int>(this->b) / static_cast<int>(l.b), 0, 255));
   }
 
-  Led operator+(Led l)
+  LedColor operator+(LedColor l)
   {
-      return Led(clamp(static_cast<int>(this->r) + static_cast<int>(l.r), 0, 255),
+      return LedColor(clamp(static_cast<int>(this->r) + static_cast<int>(l.r), 0, 255),
                 clamp(static_cast<int>(this->g) + static_cast<int>(l.g), 0, 255),
                 clamp(static_cast<int>(this->b) + static_cast<int>(l.b), 0, 255));
   }
 
-  Led operator-(Led l)
+  LedColor operator-(LedColor l)
   {
-      return Led(clamp(static_cast<int>(this->r) - static_cast<int>(l.r), 0, 255),
+      return LedColor(clamp(static_cast<int>(this->r) - static_cast<int>(l.r), 0, 255),
                 clamp(static_cast<int>(this->g) - static_cast<int>(l.g), 0, 255),
                 clamp(static_cast<int>(this->b) - static_cast<int>(l.b), 0, 255));
   }
@@ -93,18 +93,17 @@ class MiLed
 int m_datapin;
 int m_count;
 
-uint8_t databit;
+uint8_t m_databit;
 
-Led* data;
+LedColor* data;
 
-// data input output write
-void dio_write(uint8_t b);
+void dio_write(uint8_t byte);
 void send(uint8_t R,uint8_t G,uint8_t B);
 void reset();
 
 public:
 
-Led& operator[](unsigned int index);
+LedColor& operator[](unsigned int index);
 MiLed(int datapin,int count);
 void clear();
 void show();
@@ -117,19 +116,19 @@ inline int get_count()
 
 namespace effects
 {
-  void pushleds(MiLed& miled,const Led& color,int num,int del = 50);
-  void sendfadeleds(MiLed& miled,Led color,int del = 50);
+  void pushleds(MiLed& miled,const LedColor& color,int num,int del = 50);
+  void sendfadeleds(MiLed& miled,LedColor color,int del = 50);
   void pushledsrandom(MiLed& miled,int num,int del = 50);
   
   void rainbow(MiLed& miled);
   void rainbowpush(MiLed& miled);
   void rainbowpushchanging(MiLed& miled);
 
-  void gradient(MiLed& miled,Led color1,Led color2);
-  void gradientmove(MiLed& miled,Led color1,Led color2);
+  void gradient(MiLed& miled,LedColor color1,LedColor color2);
+  void gradientmove(MiLed& miled,LedColor color1,LedColor color2);
 
-  void gravity(MiLed& miled,const Led& color,int del = 50);
-  void gravitypush(MiLed& miled,const Led& color,int del = 50);
+  void gravity(MiLed& miled,const LedColor& color,int del = 50);
+  void gravitypush(MiLed& miled,const LedColor& color,int del = 50);
 
   void firework(MiLed& miled,int del = 25);
   //for contribution:
